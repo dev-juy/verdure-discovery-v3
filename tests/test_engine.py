@@ -15,11 +15,13 @@ from verdure.dedupe import deduplicate
 from verdure.models import Event, utcnow
 from verdure.pipeline import refresh
 from verdure.sources.ical import parse_ics
+from verdure.sources.rss import parse_rss
 from verdure.sources.ticketmaster import parse_ticketmaster
 from verdure.validate import is_publishable, validate
 
 REGION = {"name": "test", "center": {"lat": 37.3382, "lon": -121.8863}, "max_radius_miles": 30}
 SCHEDULE = {"drop_past_after_hours": 2, "horizon_days": 21}
+FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def _ev(**kw) -> Event:
@@ -287,6 +289,59 @@ def test_notifications_capped_per_day(tmp_path: Path):
     refresh(cfg, str(tmp_path))  # a second refresh the same day must not exceed the cap
     queue = json.loads((tmp_path / "output" / "notifications" / "u.json").read_text())
     assert len(queue) == 2
+
+
+def test_rss_parses_sjsu_calendar_feed():
+    """Localist-style feed: geo:lat/geo:long, category, and one item with no
+    pubDate that must be skipped rather than guessed."""
+    raw = (FIXTURES / "sjsu_calendar.rss.xml").read_bytes()
+    events = parse_rss(raw, "sjsu_rss", organizer_fallback="SJSU")
+    assert len(events) == 4  # 5 items in the feed, 1 has no pubDate
+    titles = {e.title for e in events}
+    assert "Celebrating Legacy, Impact, and Service at King Library" in titles
+    assert "Men's Golf: SJSU at Palouse Collegiate (schedule pending)" not in titles
+    king_library = next(e for e in events if e.title.startswith("Celebrating Legacy"))
+    assert king_library.lat == pytest.approx(37.335691)
+    assert king_library.organizer == "SJSU"
+
+
+def test_rss_parses_cdm_events_feed():
+    """WordPress 'The Events Calendar' feed whose pubDate really is the
+    event's occurrence time (dates run forward from the day the feed was
+    fetched), unlike the sanjosejazz.org fixture below."""
+    raw = (FIXTURES / "cdm_events.rss.xml").read_bytes()
+    events = parse_rss(raw, "cdm_rss", organizer_fallback="Children's Discovery Museum")
+    assert len(events) == 5
+    assert all(e.start.year == 2026 and e.start.month == 10 and e.start.day == 18 for e in events)
+    assert any("kids" in e.categories for e in events)
+
+
+def test_rss_skips_item_with_no_trustworthy_date():
+    """sanjosejazz.org/events/feed/: pubDate is really the WordPress post's
+    last-modified time (one real item is dated over a year before others
+    listed as upcoming alongside it -- see the fixture's own comment), so
+    this adapter can't tell a 'real' date from a 'wrong' one here and must
+    not try. It only skips the one item with no pubDate at all."""
+    raw = (FIXTURES / "sanjosejazz_events.rss.xml").read_bytes()
+    events = parse_rss(raw, "sjjazz_rss", organizer_fallback="San Jose Jazz")
+    assert len(events) == 4  # 5 items, 1 has no pubDate
+    titles = {e.title for e in events}
+    assert "Open Mic Night (date TBD on site)" not in titles
+    assert "Legally Blue" in titles  # parsed as given, even though it's the stale one
+
+
+def test_neighborhoods_are_within_region_radius():
+    """Every checked area in data/neighborhoods.json must fall inside the
+    region's own 25-mile radius around downtown San Jose -- otherwise a user
+    who picks that area by name would be handed a center point outside the
+    very region the engine covers."""
+    from verdure.geo import haversine_miles, load_areas
+    areas = load_areas()
+    assert len(areas) >= 10
+    center = REGION["center"]
+    for name, (lat, lon) in areas.items():
+        dist = haversine_miles(center["lat"], center["lon"], lat, lon)
+        assert dist <= 25, f"{name} is {dist:.1f} miles from downtown San Jose, outside the 25-mile radius"
 
 
 def test_rerank_only_touches_changed_profiles(tmp_path: Path):

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Real San Jose-area RSS feed: Children's Discovery Museum of San Jose,
+  https://www.cdm.org/events/feed/ (WordPress "The Events Calendar" plugin).
+
+  Same note as the SJSU fixture: this sandbox can't curl cdm.org directly
+  (network egress is restricted to package registries and GitHub), so the
+  live feed's real content and exact tag shape -- including the
+  "?post_type=tribe_events&p=NNNN" guid format and the Yoast-style
+  "The post X appeared first on Y" description boilerplate -- were
+  confirmed with this session's web-fetch tool on 2026-10-19 and
+  transcribed here. Re-save with a direct curl before relying on it
+  long-term.
+
+  Unlike the sanjosejazz.org fixture below, this feed's pubDate values ARE
+  the actual event occurrence times -- they run forward in calendar order
+  starting from "today" in the live feed, which is the signal that made us
+  trust this one and distrust that one.
+-->
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Events &#8211; Children's Discovery Museum of San Jose</title>
+    <link>https://www.cdm.org/events/</link>
+    <description>Children's Discovery Museum of San Jose event listings</description>
+    <item>
+      <title>Outdoor Experiences</title>
+      <link>https://www.cdm.org/event/outdoor-experiences/2026-10-18/</link>
+      <pubDate>Sun, 18 Oct 2026 07:00:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.cdm.org/?post_type=tribe_events&#038;p=6363</guid>
+      <description><![CDATA[<p>The post <a rel="nofollow" href="https://www.cdm.org/event/outdoor-experiences/2026-10-18/">Outdoor Experiences</a> appeared first on <a rel="nofollow" href="https://www.cdm.org">Children&#8217;s Discovery Museum of San Jose</a>. Explore our outdoor play areas included with general admission.</p>]]></description>
+      <category><![CDATA[always on]]></category>
+    </item>
+    <item>
+      <title>Indoor Exhibits</title>
+      <link>https://www.cdm.org/event/indoor-exhibits/2026-10-18/</link>
+      <pubDate>Sun, 18 Oct 2026 07:00:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.cdm.org/?post_type=tribe_events&#038;p=6360</guid>
+      <description><![CDATA[<p>The post <a rel="nofollow" href="https://www.cdm.org/event/indoor-exhibits/2026-10-18/">Indoor Exhibits</a> appeared first on <a rel="nofollow" href="https://www.cdm.org">Children&#8217;s Discovery Museum of San Jose</a>. All our indoor galleries are open, included with general admission.</p>]]></description>
+      <category><![CDATA[always on]]></category>
+    </item>
+    <item>
+      <title>Museum Weekend Hours 9:30 to 4:30</title>
+      <link>https://www.cdm.org/event/museum-weekend-hours/2026-10-18/</link>
+      <pubDate>Sun, 18 Oct 2026 16:30:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.cdm.org/?post_type=tribe_events&#038;p=5900</guid>
+      <description><![CDATA[<p>The post <a rel="nofollow" href="https://www.cdm.org/event/museum-weekend-hours/2026-10-18/">Museum Weekend Hours 9:30 to 4:30</a> appeared first on <a rel="nofollow" href="https://www.cdm.org">Children&#8217;s Discovery Museum of San Jose</a>.</p>]]></description>
+      <category><![CDATA[hours]]></category>
+    </item>
+    <item>
+      <title>Upcycle Playscape</title>
+      <link>https://www.cdm.org/event/upcycle-playscape/2026-10-18/</link>
+      <pubDate>Sun, 18 Oct 2026 16:30:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.cdm.org/?post_type=tribe_events&#038;p=27001</guid>
+      <description><![CDATA[<p>The post <a rel="nofollow" href="https://www.cdm.org/event/upcycle-playscape/2026-10-18/">Upcycle Playscape</a> appeared first on <a rel="nofollow" href="https://www.cdm.org">Children&#8217;s Discovery Museum of San Jose</a>. Build and tinker with reclaimed materials.</p>]]></description>
+      <category><![CDATA[family]]></category>
+    </item>
+    <item>
+      <title>Make Your Own Mask!</title>
+      <link>https://www.cdm.org/event/make-your-own-mask/2026-10-18/</link>
+      <pubDate>Sun, 18 Oct 2026 17:00:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.cdm.org/?post_type=tribe_events&#038;p=29117</guid>
+      <description><![CDATA[<p>The post <a rel="nofollow" href="https://www.cdm.org/event/make-your-own-mask/2026-10-18/">Make Your Own Mask!</a> appeared first on <a rel="nofollow" href="https://www.cdm.org">Children&#8217;s Discovery Museum of San Jose</a>. A hands-on craft activity for kids.</p>]]></description>
+      <category><![CDATA[kids craft]]></category>
+    </item>
+  </channel>
+</rss>

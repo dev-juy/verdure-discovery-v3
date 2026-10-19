@@ -19,6 +19,7 @@ paths:
   store: "data/events.json"
   users_dir: "data/users"
   venues_file: "data/venues.json"   # fallback coordinates for venues a feed gives no lat/lon for
+  neighborhoods_file: "data/neighborhoods.json"   # checked coordinates for named-area picks (verdure/geo.py AREAS)
   output_dir: "output"
   log_file: "output/engine.log"
 

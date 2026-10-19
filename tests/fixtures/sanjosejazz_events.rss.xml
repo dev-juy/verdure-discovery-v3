@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Real San Jose-area RSS feed: San Jose Jazz, https://www.sanjosejazz.org/events/feed/
+  (also a WordPress "The Events Calendar" feed). Same transcription note as
+  the other two fixtures: confirmed live via this session's web-fetch tool
+  on 2026-10-19 and reconstructed here (sandbox egress can't curl
+  sanjosejazz.org directly).
+
+  Why this one is here and marked "do not enable yet" in PREP-NEXT-WEEK.md:
+  on the live feed, <pubDate> is clearly the WordPress POST's last-modified
+  time, not the show's date. Three real items in a row went
+  13 Aug 2026 -> 24 Sep 2026 -> 13 Aug 2026 again, and a fourth, "Legally
+  Blue", was dated 07 Feb 2025 despite being listed as upcoming alongside
+  2026 shows. A feed that behaves like this will feed wrong dates into the
+  engine if it's trusted the way sjsu_calendar.rss.xml and cdm_events.rss.xml
+  are. This adapter has no way to detect that from a single item, so the
+  fixture's job is to prove the adapter still does the one safe thing: parse
+  <pubDate> exactly as given (it has no way to know it's "wrong" here), and
+  skip only the one item below with no <pubDate> at all.
+-->
+<rss version="2.0">
+  <channel>
+    <title>Events &#8211; San Jose Jazz</title>
+    <link>https://www.sanjosejazz.org/events/</link>
+    <description>San Jose Jazz event listings</description>
+    <item>
+      <title>Alicia Cami&#241;a</title>
+      <link>https://sanjosejazz.org/events/alicia-camina/</link>
+      <pubDate>Thu, 13 Aug 2026 19:16:53 +0000</pubDate>
+      <guid isPermaLink="false">https://sanjosejazz.org/?post_type=tribe_events&#038;p=41201</guid>
+      <description><![CDATA[Vocal jazz at the Cafe Stritch stage.]]></description>
+    </item>
+    <item>
+      <title>Bright Moments After Party w/ Martin Luther McCoy</title>
+      <link>https://sanjosejazz.org/events/bright-moments-after-party/</link>
+      <pubDate>Thu, 24 Sep 2026 18:14:15 +0000</pubDate>
+      <guid isPermaLink="false">https://sanjosejazz.org/?post_type=tribe_events&#038;p=41219</guid>
+      <description><![CDATA[Late-night after party set.]]></description>
+    </item>
+    <item>
+      <title>Laura Anglade</title>
+      <link>https://sanjosejazz.org/events/laura-anglade/</link>
+      <pubDate>Thu, 13 Aug 2026 19:58:16 +0000</pubDate>
+      <guid isPermaLink="false">https://sanjosejazz.org/?post_type=tribe_events&#038;p=41233</guid>
+      <description><![CDATA[Jazz vocalist performance.]]></description>
+    </item>
+    <item>
+      <title>Legally Blue</title>
+      <link>https://sanjosejazz.org/events/legally-blue/</link>
+      <pubDate>Fri, 07 Feb 2025 18:08:46 +0000</pubDate>
+      <guid isPermaLink="false">https://sanjosejazz.org/?post_type=tribe_events&#038;p=38840</guid>
+      <description><![CDATA[Blues showcase -- note this pubDate predates the items above despite
+      all being listed as upcoming on the live site, which is the tell
+      that this feed's pubDate is a post-modified timestamp, not the show
+      date.]]></description>
+    </item>
+    <item>
+      <!-- No pubDate at all: the adapter must skip this one. -->
+      <title>Open Mic Night (date TBD on site)</title>
+      <link>https://sanjosejazz.org/events/open-mic-night/</link>
+      <guid isPermaLink="false">https://sanjosejazz.org/?post_type=tribe_events&#038;p=41299</guid>
+      <description><![CDATA[Listed on the site with no confirmed date yet.]]></description>
+    </item>
+  </channel>
+</rss>

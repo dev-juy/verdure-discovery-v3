@@ -2,22 +2,58 @@
 
 from __future__ import annotations
 
+import json
 import math
+from pathlib import Path
 from typing import Optional
 
-# Approximate centers for areas users can pick instead of exact coordinates.
-AREAS = {
-    "downtown san jose": (37.3352, -121.8811),
+# Fallback only -- used if data/neighborhoods.json is missing or unreadable.
+# The checked coordinates (with their source links) live in that file; see
+# load_areas() below and PREP-NEXT-WEEK.md for how they were verified.
+_FALLBACK_AREAS = {
+    "downtown san jose": (37.3382, -121.8863),
     "sjsu": (37.3352, -121.8811),
-    "willow glen": (37.3030, -121.8990),
-    "almaden": (37.2200, -121.8640),
-    "cambrian": (37.2560, -121.9300),
-    "evergreen": (37.3100, -121.7700),
+    "willow glen": (37.3046, -121.8982),
+    "almaden": (37.2203, -121.8654),
+    "cambrian": (37.2583, -121.9204),
+    "evergreen": (37.3096, -121.8111),
     "santa clara": (37.3541, -121.9552),
-    "sunnyvale": (37.3688, -122.0363),
+    "sunnyvale": (37.3715, -122.0375),
     "campbell": (37.2872, -121.9500),
     "milpitas": (37.4323, -121.8996),
 }
+
+
+def load_areas(path: Optional[str] = None) -> dict[str, tuple[float, float]]:
+    """Named-area centers a user can pick instead of exact coordinates.
+
+    Reads data/neighborhoods.json (checked addresses with source links); if
+    that file is missing, unreadable, or empty, falls back to the built-in
+    table above rather than crashing -- same "bad data degrades, never
+    crashes" rule the rest of this engine follows. Defaults to
+    data/neighborhoods.json next to the project root (not the current
+    working directory), so it loads the same way whether the engine is run
+    from its own folder or launched from somewhere else.
+    """
+    if path is None:
+        path = str(Path(__file__).resolve().parent.parent / "data" / "neighborhoods.json")
+    p = Path(path)
+    if p.exists():
+        try:
+            raw = json.loads(p.read_text(encoding="utf-8"))
+            areas = {
+                str(a["name"]).lower(): (float(a["latitude"]), float(a["longitude"]))
+                for a in raw.get("areas", [])
+                if "name" in a and "latitude" in a and "longitude" in a
+            }
+            if areas:
+                return areas
+        except (json.JSONDecodeError, OSError, KeyError, TypeError, ValueError):
+            pass
+    return dict(_FALLBACK_AREAS)
+
+
+AREAS = load_areas()
 
 
 def haversine_miles(lat1: float, lon1: float, lat2: float, lon2: float) -> float:

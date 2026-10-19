@@ -3,12 +3,14 @@
 from .base import Source
 from .ical import ICalSource
 from .livewhale import LiveWhaleSource
+from .rss import RSSSource
 from .submissions import SubmissionsSource
 from .ticketmaster import TicketmasterSource
 
 REGISTRY: dict[str, type[Source]] = {
     "ical": ICalSource,
     "livewhale": LiveWhaleSource,
+    "rss": RSSSource,
     "ticketmaster": TicketmasterSource,
     "submissions": SubmissionsSource,
 }

@@ -25,16 +25,25 @@ verdure-discovery/
 │       ├── base.py               # Source base class
 │       ├── ical.py               # any .ics feed (Localist, CivicPlus, libraries)
 │       ├── livewhale.py          # LiveWhale JSON (Santa Clara University)
+│       ├── rss.py                # plain RSS 2.0 event feeds
 │       ├── ticketmaster.py       # Ticketmaster Discovery API
 │       └── submissions.py        # organizer JSON drop folder
 ├── data/
 │   ├── venues.json               # fallback lat/lon for venues feeds don't geocode
+│   ├── neighborhoods.json        # checked coordinates for named-area picks (verdure/geo.py AREAS)
+│   ├── fix_it_messages.json      # organizer-facing message per rejection reason
+│   ├── coverage-test-set.csv     # 100 hand-checked real events, for scoring source coverage
 │   ├── users/
 │   │   └── example_family.json   # sample user profile
 │   └── submissions/
 │       └── example_storytime.json# sample organizer submission
+├── sim/
+│   ├── interleaving_sim.py       # team-draft interleaving session-count simulation
+│   └── RESULTS.md                # its results table + recommendation
 ├── tests/
-│   └── test_engine.py
+│   ├── test_engine.py
+│   └── fixtures/                 # saved real RSS feeds used by the rss.py tests
+├── PREP-NEXT-WEEK.md             # handoff notes for this week prep work
 └── output/                       # created automatically on first run
     ├── feeds/<user_id>.json      # ranked feed per user
     ├── notifications/<user_id>.json  # pending push notifications
@@ -57,7 +66,7 @@ source .venv/bin/activate
 .venv\Scripts\activate
 
 pip install -r requirements.txt
-python -m pytest -q          # should print: 15 passed
+python -m pytest -q          # should print: 19 passed
 ```
 
 For Ticketmaster events, get a free key at developer.ticketmaster.com and set it as an environment variable (the engine skips that source if it's missing):
@@ -157,7 +166,7 @@ Write files atomically (write `name.json.tmp`, then rename to `name.json`) so th
 
 `user_id` must be letters, digits, `_` or `-` (max 64) and should match the file name. Numbers sent as strings (`"10"`) are accepted.
 
-Named areas: downtown san jose, sjsu, willow glen, almaden, cambrian, evergreen, santa clara, sunnyvale, campbell, milpitas (edit `verdure/geo.py` to add more).
+Named areas: downtown san jose, sjsu, willow glen, almaden, cambrian, evergreen, santa clara, sunnyvale, campbell, milpitas. Their coordinates live in `data/neighborhoods.json` (each with the official address and source link it was checked against — see that file and `PREP-NEXT-WEEK.md`); to add more, add entries there rather than editing `verdure/geo.py` directly.
 
 Interest categories: family, kids, music, arts, education, outdoors, volunteer, sports, fitness, food, community, campus, tech, social, film, theater, workshop, civic, other.
 
@@ -194,6 +203,8 @@ Every feed entry includes `components`, `diversity_penalty`, and plain-language 
 
 Distance filtering needs coordinates, and many calendar feeds give only a venue name and address. Events with no coordinates are hidden from users who have a location set. `data/venues.json` is a fallback table: keys are lowercase text matched against an event's venue name and address, values are `{"lat": ..., "lon": ...}`. After each run, check `common_issues.not_geocoded` in `output/report.json`; if it's high, add the missing venues to that file. The four seeded entries are approximate, so verify them.
 
+Separately, `data/neighborhoods.json` holds the checked coordinates for the named areas in the previous section (a different, smaller table than `venues.json` — one per pickable area, not per venue), each with the official address and source link it was verified against.
+
 ## Data quality report
 
 `output/report.json` refreshes every cycle with: per-source fetch status, publishable vs rejected counts, duplicates removed, % complete listings, most common missing fields, rejection reasons, and coverage by area and category. `output/rejected.json` lists each rejected listing and why, which is what you send back to organizers.
@@ -212,6 +223,8 @@ Any platform with an `.ics` feed needs no code, just a config entry (recurring e
     default_category: "community"
     enabled: true
 ```
+
+A plain RSS 2.0 feed also needs no code — just `type: rss` and a `url`; see `verdure/sources/rss.py`'s module docstring for what it reads and, importantly, what it refuses to guess (it skips any item with no parseable `<pubDate>` rather than inventing one).
 
 For a new feed format, add a class in `verdure/sources/` that subclasses `Source` and returns a list of `Event`, then register it in `verdure/sources/__init__.py`. Your existing BiblioCommons adapters can be dropped in this way.
 

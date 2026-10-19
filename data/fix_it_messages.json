@@ -1,0 +1,10 @@
+{
+  "_note": "One friendly, blame-free sentence per rejection reason, shown to the organizer whose listing was rejected. Keys match verdure/validate.py's BLOCKING set exactly. Keep each under 15 words.",
+  "missing_title": "Add a title so people know what your event is.",
+  "missing_start": "Add a start date and time.",
+  "end_before_start": "Check your end time — it's before the start.",
+  "already_ended": "This event's end time has already passed.",
+  "cancelled": "This event is marked cancelled, so it's hidden from search.",
+  "outside_region": "Verdure covers the San José area; this location is outside it.",
+  "missing_location_in_person": "Add an address so people can find your event."
+}

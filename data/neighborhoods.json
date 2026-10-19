@@ -1,0 +1,95 @@
+{
+  "_note": "Checked coordinates for the named areas users can pick instead of exact coordinates (verdure/geo.py AREAS). Each entry anchors on a real, officially-published address rather than an estimate of the neighborhood's center. 'confirmed_live' is true for the ones this session fetched directly from the official site; the rest use the same well-established public address but the live fetch errored out when re-checking it this session (site returned an error, not a bad address) -- re-run that fetch once before treating them as final. Coordinates are the anchor address's location, accurate to roughly a city block; for GIS-centroid precision, cross-check against data.sanjoseca.gov.",
+  "areas": [
+    {
+      "name": "downtown san jose",
+      "latitude": 37.3382,
+      "longitude": -121.8863,
+      "anchor": "San Jose City Hall, 200 E. Santa Clara St, San Jose, CA 95113",
+      "source": "https://www.sanjoseca.gov/",
+      "confirmed_live": false,
+      "note": "Live re-check errored on this session's fetch tool; address is the well-established public City Hall address."
+    },
+    {
+      "name": "sjsu",
+      "latitude": 37.3352,
+      "longitude": -121.8811,
+      "anchor": "San Jose State University, One Washington Square, San Jose, CA 95192",
+      "source": "https://www.sjsu.edu/visit/",
+      "confirmed_live": true,
+      "note": "SJSU is a campus, not an official neighborhood boundary -- using the campus address itself, as instructed for names with no official boundary."
+    },
+    {
+      "name": "willow glen",
+      "latitude": 37.3046,
+      "longitude": -121.8982,
+      "anchor": "Willow Glen Branch Library, 1157 Minnesota Ave, San Jose, CA 95125",
+      "source": "https://www.sjpl.org/locations/willow-glen",
+      "confirmed_live": true,
+      "note": null
+    },
+    {
+      "name": "almaden",
+      "latitude": 37.2203,
+      "longitude": -121.8654,
+      "anchor": "Almaden Branch Library, 6445 Camden Ave, San Jose, CA 95120",
+      "source": "https://www.sjpl.org/locations/almaden",
+      "confirmed_live": true,
+      "note": null
+    },
+    {
+      "name": "cambrian",
+      "latitude": 37.2583,
+      "longitude": -121.9204,
+      "anchor": "Camden Community Center, 3369 Union Ave, San Jose, CA 95124",
+      "source": "https://www.sanjoseca.gov/",
+      "confirmed_live": false,
+      "note": "No SJPL branch or official neighborhood-association boundary found for 'Cambrian' (sjpl.org's full location list has no Cambrian branch). Using the nearest official City of San Jose Parks & Recreation facility as the anchor, same treatment as SJSU. Live re-check of this specific address errored on this session's fetch tool."
+    },
+    {
+      "name": "evergreen",
+      "latitude": 37.3096,
+      "longitude": -121.8111,
+      "anchor": "Evergreen Branch Library, 2635 Aborn Rd, San Jose, CA 95121",
+      "source": "https://www.sjpl.org/locations/evergreen",
+      "confirmed_live": true,
+      "note": null
+    },
+    {
+      "name": "santa clara",
+      "latitude": 37.3541,
+      "longitude": -121.9552,
+      "anchor": "Santa Clara City Hall, 1500 Warburton Ave, Santa Clara, CA 95050",
+      "source": "https://www.santaclaraca.gov/",
+      "confirmed_live": false,
+      "note": "Live re-check errored on this session's fetch tool; address is the city's well-established public City Hall address."
+    },
+    {
+      "name": "sunnyvale",
+      "latitude": 37.3715,
+      "longitude": -122.0375,
+      "anchor": "Sunnyvale City Hall, 456 W. Olive Ave, Sunnyvale, CA 94086",
+      "source": "https://www.sunnyvale.ca.gov/",
+      "confirmed_live": true,
+      "note": null
+    },
+    {
+      "name": "campbell",
+      "latitude": 37.2872,
+      "longitude": -121.9500,
+      "anchor": "Campbell City Hall, 70 N. First St, Campbell, CA 95008",
+      "source": "https://www.campbellca.gov/",
+      "confirmed_live": false,
+      "note": "Live re-check errored on this session's fetch tool; address is the city's well-established public City Hall address."
+    },
+    {
+      "name": "milpitas",
+      "latitude": 37.4323,
+      "longitude": -121.8996,
+      "anchor": "Milpitas City Hall, 455 E. Calaveras Blvd, Milpitas, CA 95035",
+      "source": "https://www.milpitas.gov/",
+      "confirmed_live": true,
+      "note": null
+    }
+  ]
+}
