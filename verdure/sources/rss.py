@@ -1,116 +1,96 @@
-"""RSS event feed adapter.
-
-Many small venues, museums, and campus calendars publish an ordinary RSS 2.0
-feed for their events, often alongside (or instead of) an iCal feed. This
-adapter reads that feed directly. It never follows an item's <link> to the
-organizer's own page -- everything it records comes from the feed's own
-<item> content.
-
-RSS has no reserved field for "when does this event start". By convention,
-event-calendar RSS feeds (Localist, The Events Calendar / "the tribe events"
-WordPress plugin, and others) reuse the standard <pubDate> element to mean
-"this item's event happens at this time", not its original RSS meaning of
-"this item was published at this time". That convention is not universal:
-while building the fixtures for this adapter we found a real San Jose-area
-feed (sanjosejazz.org/events/feed/) whose <pubDate> values are clearly the
-WordPress post's last-modified time, not the concert's date -- one item
-dated February 2025 sits between two items dated 2026, even though all
-three are upcoming shows (see tests/fixtures/sanjosejazz_events.rss.xml and
-PREP-NEXT-WEEK.md). There is no reliable way for code to detect that case
-from a single feed item, so this adapter does the one thing it safely can:
-it trusts <pubDate> exactly as given, and skips any item that has no
-parseable date at all, rather than guessing one from the title or
-description text. Whether a given feed's <pubDate> actually means "event
-start" is a decision for whoever enables that feed as a source in
-config.yaml -- see PREP-NEXT-WEEK.md for the one feed we found where the
-answer right now is "no, don't enable it yet".
-"""
-
+"""Feed-only event reader. Publication dates require an explicit source opt-in."""
 from __future__ import annotations
 
-import logging
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+from urllib.parse import urlsplit
 
 import feedparser
+from dateutil.parser import isoparse
 
-from ..models import Event, clean_text, infer_categories
+from ..models import Event, clean_text, infer_categories, to_float
 from .base import Source
 
-log = logging.getLogger("verdure.sources.rss")
 
-
-def _coord(entry, key: str):
-    v = entry.get(key)
-    if v in (None, ""):
+def _date(entry, field):
+    value = entry.get(field)
+    if not value:
         return None
     try:
-        return float(v)
-    except (TypeError, ValueError):
+        dt = isoparse(str(value))
+        # A date without a time or timezone does not establish an occurrence time.
+        if dt.tzinfo is None or 'T' not in str(value):
+            return None
+        return dt.astimezone(timezone.utc)
+    except (ValueError, TypeError, OverflowError):
         return None
 
 
 def parse_rss(raw: str | bytes, source_id: str, default_category: str | None = None,
-              organizer_fallback: str = "") -> list[Event]:
-    """Parse an RSS 2.0 (or Atom) feed's bytes/text into standard Events.
+              organizer_fallback: str = '', *, event_start_field: str | None = None,
+              event_end_field: str | None = None,
+              published_is_event_start: bool = False) -> list[Event]:
+    """Read bytes only; never dereference item URLs.
 
-    Only the feed content passed in is read -- no network call happens here.
+    Prefer a configured, verified occurrence field. RSS pubDate and Atom
+    updated are publication metadata by default. Only enable the pubDate
+    override after comparing that feed with official event pages. Never use
+    updated as an event date. Untimed/all-day items are omitted here because
+    Event has no all-day/unknown-time representation.
     """
-    parsed = feedparser.parse(raw)
-    events: list[Event] = []
-
-    for entry in parsed.entries:
-        title = clean_text(entry.get("title", ""))
+    events = []
+    # Passing a string URL to feedparser would trigger an unintended request.
+    payload = raw.encode('utf-8') if isinstance(raw, str) else raw
+    for entry in feedparser.parse(payload).entries:
+        title = clean_text(entry.get('title', ''))
         if not title:
-            log.debug("Skipping RSS item with no title")
             continue
-
-        # feedparser normalizes a timezone-aware <pubDate> (or Atom
-        # <published>) into a UTC time.struct_time. No struct here means the
-        # item had no date we can parse -- skip rather than guess one.
-        start_struct = entry.get("published_parsed") or entry.get("updated_parsed")
-        if not start_struct:
-            log.debug("Skipping RSS item with no trustworthy date: %r", title)
+        start = _date(entry, event_start_field) if event_start_field else None
+        if not event_start_field and published_is_event_start:
+            try:
+                published = parsedate_to_datetime(entry.get('published', ''))
+                if (published.tzinfo is not None and published.time().isoformat() != '00:00:00'
+                        and entry.get('livewhale_all_day') != '1'):
+                    start = published.astimezone(timezone.utc)
+            except (ValueError, TypeError, OverflowError):
+                pass
+        if start is None:
             continue
-        start = datetime(*start_struct[:6], tzinfo=timezone.utc)
-
-        desc = clean_text(entry.get("summary", "") or entry.get("description", ""))
-        link = str(entry.get("link", "") or "").strip()
-        guid = str(entry.get("id") or entry.get("guid") or "").strip() or f"{title}-{start.isoformat()}"
-
-        # A feed-provided venue/location field, when one exists (rare --
-        # most feeds we found bury location in free-text description, which
-        # this adapter does not attempt to parse, for the same
-        # "don't guess" reason dates aren't guessed).
-        venue_name = clean_text(entry.get("location", "") or entry.get("venue", ""))
-        lat = _coord(entry, "geo_lat")
-        lon = _coord(entry, "geo_long")
-
-        raw_cats = [str(t.get("term", "")) for t in entry.get("tags", []) if t.get("term")]
-        categories = infer_categories(f"{title} {' '.join(raw_cats)}", desc, default_category)
-
+        end = _date(entry, event_end_field) if event_end_field else None
+        if end and end < start:
+            continue
+        link = str(entry.get('link', '')).strip()
+        try:
+            if urlsplit(link).scheme not in ('http', 'https'):
+                link = ''
+        except ValueError:
+            link = ''
+        desc = clean_text(entry.get('summary', '') or entry.get('description', ''))
+        coords = entry.get('where', {}).get('coordinates', ())
+        lat, lon = to_float(entry.get('geo_lat')), to_float(entry.get('geo_long'))
+        if len(coords) == 2:
+            lon, lat = to_float(coords[0]), to_float(coords[1])
+        cats = ' '.join(str(t.get('term', '')) for t in entry.get('tags', []))
         events.append(Event(
             source_id=source_id,
-            source_event_id=guid,
-            title=title,
-            start=start,
-            description=desc,
-            venue_name=venue_name,
-            lat=lat,
-            lon=lon,
-            categories=categories,
-            organizer=organizer_fallback,
-            url=link,
+            source_event_id=str(entry.get('id') or entry.get('guid') or f'{link}|{start.isoformat()}'),
+            title=title, start=start, end=end, description=desc,
+            venue_name=clean_text(entry.get('location') or entry.get('venue') or
+                                  entry.get('georss_featurename') or ''),
+            lat=lat, lon=lon,
+            categories=infer_categories(title + ' ' + cats, desc, default_category),
+            organizer=organizer_fallback, url=link,
         ))
     return events
 
 
 class RSSSource(Source):
     def fetch(self) -> list[Event]:
-        # Fetch the feed itself only -- item <link> URLs are never requested.
-        content = self.http_get(self.cfg["url"]).content
+        content = self.http_get(self.cfg['url']).content
         return parse_rss(
-            content,
-            source_id=self.id,
-            default_category=self.cfg.get("default_category"),
-            organizer_fallback=self.name,
+            content, source_id=self.id,
+            default_category=self.cfg.get('default_category'), organizer_fallback=self.name,
+            event_start_field=self.cfg.get('event_start_field'),
+            event_end_field=self.cfg.get('event_end_field'),
+            published_is_event_start=self.cfg.get('published_is_event_start') is True,
         )

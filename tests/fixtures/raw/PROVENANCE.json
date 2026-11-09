@@ -1,0 +1,35 @@
+[
+  {
+    "file": "sjsu.xml.gz",
+    "url": "https://events.sjsu.edu/calendar.xml",
+    "retrieved_on": "2026-11-08",
+    "sha256": "b2a7c50518dc087ac23ad7fead3089541825b0bcfcaef2847e5696bf2aaebc76",
+    "size_bytes": 1143077,
+    "modified": false,
+    "compression": "gzip",
+    "sha256_is_for": "uncompressed original response bytes",
+    "compressed_size_bytes": 179814
+  },
+  {
+    "file": "scu.xml.gz",
+    "url": "https://events.scu.edu/live/rss/events",
+    "retrieved_on": "2026-11-08",
+    "sha256": "59bd0680f3d58eeddd335b0dd4fb7c1a7c00405df29b779faa74d6f0622bc3f5",
+    "size_bytes": 2240426,
+    "modified": false,
+    "compression": "gzip",
+    "sha256_is_for": "uncompressed original response bytes",
+    "compressed_size_bytes": 192196
+  },
+  {
+    "file": "grassroots.xml.gz",
+    "url": "https://www.grassrootsecology.org/event-calendar?format=rss",
+    "retrieved_on": "2026-11-08",
+    "sha256": "19e224be9fd08db4747399e2206cbbbabff7c6c38812d648cede1528e1331ace",
+    "size_bytes": 273389,
+    "modified": false,
+    "compression": "gzip",
+    "sha256_is_for": "uncompressed original response bytes",
+    "compressed_size_bytes": 34937
+  }
+]

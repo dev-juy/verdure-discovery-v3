@@ -27,7 +27,7 @@ _FALLBACK_AREAS = {
 def load_areas(path: Optional[str] = None) -> dict[str, tuple[float, float]]:
     """Named-area centers a user can pick instead of exact coordinates.
 
-    Reads data/neighborhoods.json (checked addresses with source links); if
+    Reads data/neighborhoods.json (official GIS and Census points with source links); if
     that file is missing, unreadable, or empty, falls back to the built-in
     table above rather than crashing -- same "bad data degrades, never
     crashes" rule the rest of this engine follows. Defaults to

@@ -1,95 +1,114 @@
 {
-  "_note": "Checked coordinates for the named areas users can pick instead of exact coordinates (verdure/geo.py AREAS). Each entry anchors on a real, officially-published address rather than an estimate of the neighborhood's center. 'confirmed_live' is true for the ones this session fetched directly from the official site; the rest use the same well-established public address but the live fetch errored out when re-checking it this session (site returned an error, not a bad address) -- re-run that fetch once before treating them as final. Coordinates are the anchor address's location, accurate to roughly a city block; for GIS-centroid precision, cross-check against data.sanjoseca.gov.",
+  "_note": "Official City of San Jose GIS neighborhood polygons and Census city internal points. Coordinates derived on 2026-11-08. Campus exception explicitly labeled. Snapshot data and derivation are in data/geo_provenance.",
   "areas": [
     {
       "name": "downtown san jose",
-      "latitude": 37.3382,
-      "longitude": -121.8863,
-      "anchor": "San Jose City Hall, 200 E. Santa Clara St, San Jose, CA 95113",
-      "source": "https://www.sanjoseca.gov/",
-      "confirmed_live": false,
-      "note": "Live re-check errored on this session's fetch tool; address is the well-established public City Hall address."
-    },
-    {
-      "name": "sjsu",
-      "latitude": 37.3352,
-      "longitude": -121.8811,
-      "anchor": "San Jose State University, One Washington Square, San Jose, CA 95192",
-      "source": "https://www.sjsu.edu/visit/",
+      "latitude": 37.332837923458655,
+      "longitude": -121.89640973367389,
+      "source": "https://geo.sanjoseca.gov/server/rest/services/OED/OED_AllReferenceLayers/MapServer/3/query?f=geojson&where=NEIGHBORHOODNAME%3D%27Downtown%27&outFields=%2A&outSR=4326",
+      "official_name": "Downtown",
+      "source_objectid": 14,
+      "checked_on": "2026-11-08",
       "confirmed_live": true,
-      "note": "SJSU is a campus, not an official neighborhood boundary -- using the campus address itself, as instructed for names with no official boundary."
+      "note": "Interior point computed from the official WGS84 polygon: midpoint of its widest horizontal intersection at the outer ring mid-latitude; not a neighborhood centroid."
     },
     {
       "name": "willow glen",
-      "latitude": 37.3046,
-      "longitude": -121.8982,
-      "anchor": "Willow Glen Branch Library, 1157 Minnesota Ave, San Jose, CA 95125",
-      "source": "https://www.sjpl.org/locations/willow-glen",
+      "latitude": 37.30211937557563,
+      "longitude": -121.90785331391578,
+      "source": "https://geo.sanjoseca.gov/server/rest/services/OED/OED_AllReferenceLayers/MapServer/3/query?f=geojson&where=NEIGHBORHOODNAME%3D%27Willow+Glen%27&outFields=%2A&outSR=4326",
+      "official_name": "Willow Glen",
+      "source_objectid": 17,
+      "checked_on": "2026-11-08",
       "confirmed_live": true,
-      "note": null
+      "note": "Interior point computed from the official WGS84 polygon: midpoint of its widest horizontal intersection at the outer ring mid-latitude; not a neighborhood centroid."
     },
     {
       "name": "almaden",
-      "latitude": 37.2203,
-      "longitude": -121.8654,
-      "anchor": "Almaden Branch Library, 6445 Camden Ave, San Jose, CA 95120",
-      "source": "https://www.sjpl.org/locations/almaden",
+      "latitude": 37.195953893484884,
+      "longitude": -121.83655636992935,
+      "source": "https://geo.sanjoseca.gov/server/rest/services/OED/OED_AllReferenceLayers/MapServer/3/query?f=geojson&where=NEIGHBORHOODNAME%3D%27Almaden+Valley%27&outFields=%2A&outSR=4326",
+      "official_name": "Almaden Valley",
+      "source_objectid": 18,
+      "checked_on": "2026-11-08",
       "confirmed_live": true,
-      "note": null
-    },
-    {
-      "name": "cambrian",
-      "latitude": 37.2583,
-      "longitude": -121.9204,
-      "anchor": "Camden Community Center, 3369 Union Ave, San Jose, CA 95124",
-      "source": "https://www.sanjoseca.gov/",
-      "confirmed_live": false,
-      "note": "No SJPL branch or official neighborhood-association boundary found for 'Cambrian' (sjpl.org's full location list has no Cambrian branch). Using the nearest official City of San Jose Parks & Recreation facility as the anchor, same treatment as SJSU. Live re-check of this specific address errored on this session's fetch tool."
+      "note": "Interior point computed from the official WGS84 polygon: midpoint of its widest horizontal intersection at the outer ring mid-latitude; not a neighborhood centroid."
     },
     {
       "name": "evergreen",
-      "latitude": 37.3096,
-      "longitude": -121.8111,
-      "anchor": "Evergreen Branch Library, 2635 Aborn Rd, San Jose, CA 95121",
-      "source": "https://www.sjpl.org/locations/evergreen",
+      "latitude": 37.283149769514964,
+      "longitude": -121.77371722179633,
+      "source": "https://geo.sanjoseca.gov/server/rest/services/OED/OED_AllReferenceLayers/MapServer/3/query?f=geojson&where=NEIGHBORHOODNAME%3D%27Evergreen%27&outFields=%2A&outSR=4326",
+      "official_name": "Evergreen",
+      "source_objectid": 6,
+      "checked_on": "2026-11-08",
       "confirmed_live": true,
-      "note": null
+      "note": "Interior point computed from the official WGS84 polygon: midpoint of its widest horizontal intersection at the outer ring mid-latitude; not a neighborhood centroid."
     },
     {
-      "name": "santa clara",
-      "latitude": 37.3541,
-      "longitude": -121.9552,
-      "anchor": "Santa Clara City Hall, 1500 Warburton Ave, Santa Clara, CA 95050",
-      "source": "https://www.santaclaraca.gov/",
-      "confirmed_live": false,
-      "note": "Live re-check errored on this session's fetch tool; address is the city's well-established public City Hall address."
-    },
-    {
-      "name": "sunnyvale",
-      "latitude": 37.3715,
-      "longitude": -122.0375,
-      "anchor": "Sunnyvale City Hall, 456 W. Olive Ave, Sunnyvale, CA 94086",
-      "source": "https://www.sunnyvale.ca.gov/",
+      "name": "cambrian",
+      "latitude": 37.27213202034066,
+      "longitude": -121.92845128932609,
+      "source": "https://geo.sanjoseca.gov/server/rest/services/OPN/OPN_OpenDataService/MapServer/549/query?f=geojson&where=NAME%3D%27Cambrian%27&outFields=%2A&outSR=4326",
+      "official_name": "Cambrian",
+      "source_objectid": 210,
+      "checked_on": "2026-11-08",
       "confirmed_live": true,
-      "note": null
+      "note": "Interior point computed from the official WGS84 polygon: midpoint of its widest horizontal intersection at the outer ring mid-latitude; not a neighborhood centroid."
     },
     {
       "name": "campbell",
-      "latitude": 37.2872,
-      "longitude": -121.9500,
-      "anchor": "Campbell City Hall, 70 N. First St, Campbell, CA 95008",
-      "source": "https://www.campbellca.gov/",
-      "confirmed_live": false,
-      "note": "Live re-check errored on this session's fetch tool; address is the city's well-established public City Hall address."
+      "latitude": 37.2802437,
+      "longitude": -121.953296,
+      "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?f=json&where=GEOID%3D%270610345%27&outFields=BASENAME%2CGEOID%2CINTPTLAT%2CINTPTLON&returnGeometry=false",
+      "official_name": "Campbell city",
+      "geoid": "0610345",
+      "checked_on": "2026-11-08",
+      "confirmed_live": true,
+      "note": "U.S. Census TIGERweb incorporated-place internal point; city, not neighborhood."
     },
     {
       "name": "milpitas",
-      "latitude": 37.4323,
-      "longitude": -121.8996,
-      "anchor": "Milpitas City Hall, 455 E. Calaveras Blvd, Milpitas, CA 95035",
-      "source": "https://www.milpitas.gov/",
+      "latitude": 37.4331363,
+      "longitude": -121.8909345,
+      "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?f=json&where=GEOID%3D%270647766%27&outFields=BASENAME%2CGEOID%2CINTPTLAT%2CINTPTLON&returnGeometry=false",
+      "official_name": "Milpitas city",
+      "geoid": "0647766",
+      "checked_on": "2026-11-08",
       "confirmed_live": true,
-      "note": null
+      "note": "U.S. Census TIGERweb incorporated-place internal point; city, not neighborhood."
+    },
+    {
+      "name": "sunnyvale",
+      "latitude": 37.385797,
+      "longitude": -122.0263165,
+      "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?f=json&where=GEOID%3D%270677000%27&outFields=BASENAME%2CGEOID%2CINTPTLAT%2CINTPTLON&returnGeometry=false",
+      "official_name": "Sunnyvale city",
+      "geoid": "0677000",
+      "checked_on": "2026-11-08",
+      "confirmed_live": true,
+      "note": "U.S. Census TIGERweb incorporated-place internal point; city, not neighborhood."
+    },
+    {
+      "name": "santa clara",
+      "latitude": 37.3646205,
+      "longitude": -121.9679735,
+      "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?f=json&where=GEOID%3D%270669084%27&outFields=BASENAME%2CGEOID%2CINTPTLAT%2CINTPTLON&returnGeometry=false",
+      "official_name": "Santa Clara city",
+      "geoid": "0669084",
+      "checked_on": "2026-11-08",
+      "confirmed_live": true,
+      "note": "U.S. Census TIGERweb incorporated-place internal point; city, not neighborhood."
+    },
+    {
+      "name": "sjsu",
+      "latitude": 37.335187,
+      "longitude": -121.881072,
+      "source": "https://events.sjsu.edu/event/global-connections-diy-diyas",
+      "anchor": "SJSU Student Union, One Washington Square, San Jose, CA 95192",
+      "checked_on": "2026-11-08",
+      "confirmed_live": true,
+      "note": "Campus anchor from official university page structured coordinates; SJSU is not a neighborhood."
     }
   ]
 }

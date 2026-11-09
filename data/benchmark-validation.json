@@ -1,0 +1,17 @@
+{
+  "rows": 120,
+  "groups": {
+    "Families and kids": 20,
+    "Hidden gems": 40,
+    "Outdoors and volunteering": 20,
+    "Students": 20,
+    "Young adults": 20
+  },
+  "distinct_websites": 42,
+  "max_rows_per_website": 5,
+  "target_city_events": 29,
+  "missing_end_times": 26,
+  "structural_errors": [],
+  "human_review_completed": false,
+  "audit_completed": false
+}
